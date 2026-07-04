@@ -1,2 +1,2 @@
-echo: echo.c
-	gcc -o echo echo.c
+server: server.c
+	gcc -o server server.c

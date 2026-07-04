@@ -35,9 +35,15 @@ int main()
             break;
         }
 
-        write(client_fd, buffer, strlen(buffer));
-        write(client_fd, "\n", 1);
-    }
+ 	const char *response =
+    		"HTTP/1.1 404 Not Found\r\n"
+    		"Content-Type: text/plain\r\n"
+    		"Content-Length: 13\r\n"
+    		"\r\n"
+    		"404 Not Found";
+
+	write(client_fd, response, strlen(response));       
+    	}
 
     close(client_fd);
     close(server_fd);
