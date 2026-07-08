@@ -51,26 +51,29 @@ int main()
 
     printf("HTTP server listening on port 12345...\n");
 
-    client_fd = accept(server_fd, NULL, NULL);
-
+    
     while (1) {
-        int n = read_line(client_fd, buffer, sizeof(buffer));
+    	client_fd = accept(server_fd, NULL, NULL);
 
-        if (n < 0) {
-            break;
-        }
+    
+    	while (1) {
+        	int n = read_line(client_fd, buffer, sizeof(buffer));
 
-	if (n == 0) {
-	    break;
-	}
+        	if (n <= 0) {
+            		break;
+        	}
 
-        printf("Line: %s\n", buffer);
+		if (buffer[0] == '\0') {
+	    		break;
+		}
 
-	if (strncmp(buffer, "GET ", 4) == 0) {
-            sscanf(buffer, "GET %255s", filename);
-	    printf("File name: %s\n", filename);
-       	}
-    }
+        	printf("Line: %s\n", buffer);
+
+		if (strncmp(buffer, "GET ", 4) == 0) {
+            		sscanf(buffer, "GET %255s", filename);
+	    		printf("File name: %s\n", filename);
+       		}
+    	}
 
 	const char *response =
     		"HTTP/1.1 404 Not Found\r\n"
@@ -79,11 +82,9 @@ int main()
     		"\r\n"
     		"404 Not Found";
 
-	write(client_fd, response, strlen(response));       
-    	
-
-    close(client_fd);
-    close(server_fd);
+	write(client_fd, response, strlen(response));       	
+    	close(client_fd);
+    }
 
     return 0;
 }
