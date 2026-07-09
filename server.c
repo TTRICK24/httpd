@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <stdlib.h>
 
 
 int read_line(int fd, char *buf, size_t size)
@@ -31,6 +32,31 @@ int read_line(int fd, char *buf, size_t size)
 	buf[i] = '\0';
 
 	return i;
+}
+
+char* load_file(const char *path, size_t *size)
+{
+	FILE *fp = fopen(path, "rb");
+
+	if (fp == NULL) {
+		return NULL;
+	}
+
+	fseek(fp, 0, SEEK_END);
+	*size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
+	char *data = malloc(*size);
+
+	if (data == NULL) {
+		fclose(fp);
+		return NULL;
+	}
+
+	fread(data, 1, *size, fp);
+	fclose(fp);
+
+	return data;
 }
 
 int main()
@@ -74,16 +100,42 @@ int main()
 	    		printf("File name: %s\n", filename);
        		}
     	}
+	
+	char path[512];
+	size_t file_size;
 
-	const char *response =
-    		"HTTP/1.1 404 Not Found\r\n"
-    		"Content-Type: text/plain\r\n"
-    		"Content-Length: 13\r\n"
-    		"\r\n"
-    		"404 Not Found";
+	snprintf(path, sizeof(path), "html%s", filename);
 
-	write(client_fd, response, strlen(response));       	
+	char *content = load_file(path, &file_size);
+
+	if (content == NULL) {
+		const char *response =
+    			"HTTP/1.1 404 Not Found\r\n"
+    			"Content-Type: text/plain\r\n"
+    			"Content-Length: 13\r\n"
+    			"\r\n"
+    			"404 Not Found";
+	
+			write(client_fd, response, strlen(response));
+	} else {
+		char header[256];
+
+		snprintf(header, sizeof(header),
+			"HTTP/1.1 200 OK\r\n"
+			"Content-Type: text/html\r\n"
+			"Content-Length: %zu\r\n"
+			"\r\n",
+			file_size);
+	
+	write(client_fd, header, strlen(header));
+    	write(client_fd, content, file_size);	
+	
+
+    		free(content);
+    	}
+
     	close(client_fd);
+    
     }
 
     return 0;
