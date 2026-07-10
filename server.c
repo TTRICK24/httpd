@@ -121,18 +121,18 @@ int main()
 		char header[256];
 
 		snprintf(header, sizeof(header),
-			"HTTP/1.1 200 OK\r\n"
-			"Content-Type: text/html\r\n"
-			"Content-Length: %zu\r\n"
-			"\r\n",
-			file_size);
-	
-	write(client_fd, header, strlen(header));
-    	write(client_fd, content, file_size);	
-	
+				"HTTP/1.1 200 OK\r\n"
+				"Content-Type: text/html\r\n"
+				"Content-Length: %zu\r\n"
+				"\r\n",
+				file_size);
 
-    		free(content);
-    	}
+		write(client_fd, header, strlen(header));
+		write(client_fd, content, file_size);	
+
+
+		free(content);
+	}
 
     	close(client_fd);
     
