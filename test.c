@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 		strcpy(x.name, argv[2]);
 		strcpy(x.password, argv[3]);
 
-		FILE *f = fopen("user.dat", "wb");
+		FILE *f = fopen("user.dat", "ab");
 
 		if (f == NULL) {
 			printf("Cannot open file.\n");
@@ -42,13 +42,15 @@ int main(int argc, char *argv[])
 			printf("Cannot open file.\n");
 			return 1;
 		}
+		while (fread(&x, sizeof(x), 1, f)==1) {
+			printf("Name: %s\n", x.name);
+			printf("Password: %s\n", x.password);
+			printf("%ld\n",ftell(f));
+		}
 
-		fread(&x, sizeof(x), 1, f);
 		fclose(f);
 
-		printf("Name: %s\n", x.name);
-		printf("Password: %s\n", x.password);
-	}
+			}
 	else {
 		printf("Usage:\n");
 		printf(" %s add <name> <password>\n", argv[0]);
