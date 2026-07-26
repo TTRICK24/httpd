@@ -51,6 +51,28 @@ int main(int argc, char *argv[])
 		fclose(f);
 
 			}
+
+	else if (argc >= 2 && strcmp(argv[1], "login") == 0) {
+		
+		FILE *f = fopen("user.dat", "rb");
+
+		if (f == NULL) {
+			printf("Cannot open file.\n");
+			return 1;
+		}
+		while (fread(&x, sizeof(x), 1, f)==1) {
+			if (strcmp(argv[2], x.name) == 0 && 
+			    strcmp(argv[3], x.password) == 0) {
+				printf("ok\n");
+				fclose(f);
+				return 0;
+			}
+		}
+		fclose(f);
+		printf("fail\n");
+	}
+
+
 	else {
 		printf("Usage:\n");
 		printf(" %s add <name> <password>\n", argv[0]);
