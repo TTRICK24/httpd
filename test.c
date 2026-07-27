@@ -72,6 +72,20 @@ int main(int argc, char *argv[])
 		printf("fail\n");
 	}
 
+	else if (argc >= 2 && strcmp(argv[1], "count") == 0) {
+		FILE *f = fopen("user.dat", "rb");
+		if (f == NULL) {
+			printf("Cannot open file.\n");
+			return 1;
+		}
+		fseek(f, 0, SEEK_END);
+		long size = ftell(f);
+		fclose(f);
+
+		long count = size / sizeof(struct user);
+		printf("Users: %ld\n", count);
+	}
+
 
 	else {
 		printf("Usage:\n");
