@@ -35,7 +35,9 @@ int main(int argc, char *argv[])
 		printf("User saved.\n");
 	}
 	else if (argc >= 2 && strcmp(argv[1], "show") == 0) {
-
+		
+		struct user list [16];
+		int i = 0;
 		FILE *f = fopen("user.dat", "rb");
 
 		if (f == NULL) {
@@ -43,9 +45,11 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 		while (fread(&x, sizeof(x), 1, f)==1) {
+			list[i] = x;
 			printf("Name: %s\n", x.name);
 			printf("Password: %s\n", x.password);
-			printf("%ld\n",ftell(f));
+			printf("%ld\n", ftell(f));
+			i++;
 		}
 
 		fclose(f);
