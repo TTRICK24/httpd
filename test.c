@@ -1,12 +1,18 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 struct user {
 	char name[64];
 	char password[64];
 };
 
-
+int compare_users(const void *a, const void *b)
+{
+	const struct user *ua = (const struct user *)a;
+	const struct user *ub = (const struct user *)b;
+	return strcmp(ua->name, ub->name);
+}
 
 int main(int argc, char *argv[]) 
 {
@@ -46,15 +52,19 @@ int main(int argc, char *argv[])
 		}
 		while (fread(&x, sizeof(x), 1, f)==1) {
 			list[i] = x;
-			printf("Name: %s\n", x.name);
-			printf("Password: %s\n", x.password);
-			printf("%ld\n", ftell(f));
 			i++;
 		}
 
 		fclose(f);
 
+		qsort(list, i, sizeof(struct user), compare_users);
+
+		for (int j = 0; j < i; j++) {
+			printf("Name: %s\n", list[j].name);
+			printf("Password: %s\n", list[j].password);
+
 			}
+	}
 
 	else if (argc >= 2 && strcmp(argv[1], "login") == 0) {
 		
